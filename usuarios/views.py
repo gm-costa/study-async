@@ -56,7 +56,6 @@ def logar(request):
         user = authenticate(request, username=username, password=senha)
         if user:
             login(request, user)
-            messages.add_message(request, messages.SUCCESS, 'Logado!')
             return redirect(reverse('novo_flashcard'))
         else:
             messages.add_message(
