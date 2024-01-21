@@ -88,9 +88,14 @@
     font-weight: bold;
     padding-left: 25px;
     padding-right: 25px;
-    opacity: .8;
+    opacity: .9;
 }
 
 .btn-cadastro:hover{
     opacity: 1;
+}
+
+.bsm {
+    padding: 5px 25px;
+    height: 38px;
 }

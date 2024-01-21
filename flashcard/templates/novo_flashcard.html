@@ -12,11 +12,9 @@
 {% block 'conteudo' %}
 
     <div class="container">
-        <br>
-        <br>
-        <div class="row">       
+        <div class="row mt-5 gap-2">       
             <div class="col-md">
-                <div class="box-form">
+                <div class="box-form mt-0">
                     <form action="{% url "novo_flashcard" %}" method="POST"> 
                         {% csrf_token %}
                         <h3>Novo flashcard</h3>
@@ -28,13 +26,14 @@
                                 </section>
                             {% endfor %}
                         {% endif %}
-                        <br>
-                        <label>Pergunta</label>
-                        <input type="text" class="form-control" placeholder="pergunta" name="pergunta">
-                        <br>
-                        <label>Resposta</label>
-                        <textarea class="form-control" name="resposta"></textarea>
-                        <br>
+                        <div class="my-3">
+                            <label>Pergunta</label>
+                            <input type="text" class="form-control" placeholder="pergunta" name="pergunta">
+                        </div>
+                        <div class="mb-3">
+                            <label>Resposta</label>
+                            <textarea class="form-control" name="resposta"></textarea>
+                        </div>
                         <div class="row">
                             <div class="col-md">
                                 <label for="">Categoria</label>
@@ -45,7 +44,7 @@
                                     {% endfor %}    
                                 </select>
                             </div>
-                            <div class="col-md">
+                            <div class="col-md mb-4">
                                 <label for="">Dificuldade</label>
                                 <select class="form-select" name="dificuldade">
                                     <option value="">- - -</option>
@@ -55,67 +54,65 @@
                                 </select>
                             </div>
                         </div>
-                        <br>
-                        <input type="submit" value="Enviar" class="btn-cadastro">
-                        <br>
-                        <br>
-                        <br>
+                        <input type="submit" value="Enviar" class="btn-cadastro mb-5">
                     </form>
                 </div>
             </div>
             <div class="col-md">
                 <form action="{% url "novo_flashcard" %}" method="GET">
-                    <div class="row">
+                    <div class="row gap-1 mb-5">
                         <div class="col-md">
                             <label for="">Categoria</label>
-                            <select name="categoria" id="" class="form-select">
-                                <option value="">- - -</option>
+                            <select name="categoria-filtro" class="form-select">
+                                <option value="">Todas</option>
                                 {% for categoria in categorias %}
-                                    <option value="{{categoria.id}}">{{categoria.nome}}</option>
+                                    <option value="{{categoria.id}}" {% if cat_filtro.id == categoria.id %} selected {% endif %}>
+                                        {{categoria.nome}}
+                                    </option>
                                 {% endfor %}  
                             </select>
                         </div>
                         <div class="col-md">
                             <label for="">Dificuldade</label>
-                            <select name="dificuldade" id="" class="form-select">
-                                <option value="">- - -</option>
+                            <select name="dificuldade-filtro" id="" class="form-select">
+                                <option value="">Todas</option>
                                 {% for dificuldade in dificuldades %}
-                                    <option value="{{dificuldade.0}}">{{dificuldade.1}}</option>
+                                    <option value="{{dificuldade.0}}" {% if dif_filtro == dificuldade.0 %} selected {% endif %}>{{dificuldade.1}}</option>
                                 {% endfor %}    
                             </select>
                         </div>
+                        <div class="col-md-1 px-0">
+                            <br>
+                            <a href="{% url "novo_flashcard" %}"><i class="bx bx-reset bx-md text-white"></i></a>
+                        </div>
                         <div class="col-md">
                             <br>
-                            <input type="submit" style="width: 100%" value="Filtrar" class="btn-cadastro">
+                            <input type="submit" value="Filtrar" class="btn-cadastro bsm">
                         </div>
                     </div>
                 </form>
-                <br>
-                <br>
                 {% for flash in flashcards %}
-                    <div class="box-new-flashcard" >
-                        <div class="flashcard">
+                    <div class="box-new-flashcard mb-4">
+                        <div class="flashcard {{flash.css_dificuldade}}">
                             <div class="flashcard-categoria">
                                 {{flash.categoria}}
                             </div>
-                            <a href=""><i class='icone-exit bx bx-x-circle'></i></a>
-                            <br>
-                            <br>
-                            <div class="flashcard-box-item">
-                                <p class="flashcard-item">{{flash.pergunta}}</p>
+                            <a href="{% url 'deletar_flashcard' flash.id %}"><i class='icone-exit bx bx-x-circle'></i></a>
+                            <div class="flashcard-box-item mt-4">
+                                <p class="flashcard-item" onclick="flip_card({{flash.id}})">{{flash.pergunta}}</p>
                             </div>                            
                         </div>
-                        <div class="resposta-flashcard">
+                        <div class="resposta-flashcard" id="{{flash.id}}">
                             {{flash.resposta}}
                         </div>
                     </div>
-                    <br>
-                    <br>
                 {% endfor %}
-                <br>
-                <br>
             </div>
         </div>
     </div>
     
 {% endblock 'conteudo' %}
+
+{% block 'script' %}
+    <script src="{% static "flashcard/js/flashcard.js" %}"></script>
+{% endblock  %}
