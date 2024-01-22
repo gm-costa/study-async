@@ -1,22 +1,29 @@
-<nav style="background-color: var(--main-color)" class="navbar navbar-expand-lg navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-dark nav-menu">
     <a class="navbar-brand" href="#">&nbsp&nbspStudy.Async</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarFlashcard" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Flashcard
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <ul class="dropdown-menu" aria-labelledby="navbarFlashcard">
                     <li><a class="dropdown-item" href="{% url 'novo_flashcard' %}">Criar flashcard</a></li>
                     <li><a class="dropdown-item" href="{% url 'iniciar_desafio' %}">Iniciar desafio</a></li>
                     <li><a class="dropdown-item" href="{% url 'listar_desafio' %}">Listar desafio</a></li>
                 </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Apostilas</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarApostilas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Apostilas
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarApostilas">
+                    <li><a class="dropdown-item" href="{% url 'adicionar_apostilas' %}">Adicionar</a></li>
+                    <li><a class="dropdown-item" href="{% url 'iniciar_desafio' %}">Iniciar desafio</a></li>
+                    <li><a class="dropdown-item" href="{% url 'listar_desafio' %}">Listar</a></li>
+                </ul>                
             </li>
         </ul>
     </div>

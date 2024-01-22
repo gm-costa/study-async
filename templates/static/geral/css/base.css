@@ -11,3 +11,7 @@ body{
     background-color: var(--dark-color) !important;
     color: white !important;
 }
+
+.nav-menu {
+    background-color: var(--main-color);
+}

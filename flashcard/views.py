@@ -200,9 +200,10 @@ def relatorio(request, id):
     desafio = get_object_or_404(Desafio, id=id)
 
     acertos = desafio.flashcards.filter(acertou=True).count()
-    erros = desafio.flashcards.filter(acertou=False).count()
+    erros = desafio.flashcards.filter(respondido=True).filter(acertou=False).count()
+    faltantes = desafio.flashcards.filter(respondido=False).count()
 
-    dados = [acertos, erros]
+    dados = [acertos, erros, faltantes]
 
     categorias = desafio.categoria.all()
     name_categoria = [i.nome for i in categorias]
@@ -218,4 +219,6 @@ def relatorio(request, id):
         'dados2': dados2,
     }
 
+    # TODO: Fazer o rank
+    
     return render(request, 'relatorio.html', context)
