@@ -1,8 +1,33 @@
-.linha {
-
+table{
+    width: 100%;
+    padding: 20px;
+    text-align: left;
 }
 
-.linha a {
-    color: black;
+.linha{
+    height: 40px;
+    background-color: var(--dark-color);
+    padding: 20px;
+}
+
+tr {
+    background-color: var(--main-color);
+}
+
+td, th{
+    padding: 10px 20px;
+}
+
+.btn-table {
+    background-color: transparent;
+    border: 1px solid #58fcd5;
+    color: #fff;
+    font-size: 1rem;
+    padding: 4px 25px;
     text-decoration: none;
+}
+
+.btn-table:hover {
+    background-color: #58fcd5;
+    color: #000;
 }

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=20)
@@ -47,6 +48,16 @@ class Desafio(models.Model):
         max_length=1, choices=Flashcard.DIFICULDADE_CHOICES
     )
     flashcards = models.ManyToManyField(FlashcardDesafio)
+
+    @property
+    def status(self):
+        return 'Em aberto' if self.flashcards.filter(respondido=False) else 'Concluído'
+        # if self.flashcards.filter(respondido=False):
+        #     html = '<span class="badge rounded-0 text-bg-info fs-6 fw-normal w-75">Em aberto</span>'
+        # else:
+        #     html = '<span class="badge rounded-0 text-bg-success fs-6 fw-normal w-75">Concluído</span>'
+        
+        # return mark_safe(html)
 
     def __str__(self):
         return self.titulo

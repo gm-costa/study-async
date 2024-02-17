@@ -1,10 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&display=swap');
+
 .fonte-principal{
-    font-family: 'Passion One', sans-serif;
-    font-weight: bold;
-    font-size: 60px;
+    font-family: 'Bakbak One', sans-serif;
+    /* font-weight: bold; */
+    /* font-size: 60px; */
+    font-size: 80px;
 }
 
 .fonte-secundaria{
+    font-family: 'Bakbak One', sans-serif;
     font-size: 35px;
 }
 

@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&display=swap');
+
+.card {
+    border: 0;
+    border-radius: 0;
+}
+
+.card > div {
+    border-radius: 0;
+    color: #fff;
+    background-color: #122342;
+}
+
+.card > div:first-child {
+    border-radius: 0;
+    /* color: #fff; */
+    background-color: #0F1825;
+}
+
+.acertos {
+    font-family: 'Bakbak One', sans-serif;
+    font-size: 24px;
+}

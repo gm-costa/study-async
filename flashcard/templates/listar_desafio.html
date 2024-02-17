@@ -25,14 +25,14 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <form action="}" method="GET">
-            <div class="row">
+        <form action="{% url "listar_desafio" %}" method="GET">
+            <div class="row gap-2">
                 <div class="col-md">
                     <label for="">Categoria</label>
                     <select name="categoria" class="form-select">
                         <option value="">Todas</option>
                         {% for categoria in categorias %}
-                            <option value="{{categoria.id}}">{{categoria}}</option>
+                            <option value="{{categoria.id}}" {% if categoria.id == cat_filtro.id %}selected{% endif %}>{{categoria}}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -41,11 +41,26 @@
                     <select name="dificuldade" class="form-select">
                         <option value="">Todas</option>
                         {% for dificuldade in dificuldades %}
-                            <option value="{{dificuldade.0}}">
+                            <option value="{{dificuldade.0}}" {% if dif_filtro == dificuldade.0 %} selected {% endif %}>
                                 {{dificuldade.1}}
                             </option>
                         {% endfor %}                   
                     </select>
+                </div>
+                <div class="col-md">
+                    <label for="">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">Todos</option>
+                        {% for st in lista_status %}
+                            <option value="{{st}}"  {% if st == status_filtro %} selected {% endif %}>
+                                {{st}}
+                            </option>
+                        {% endfor %}                   
+                    </select>
+                </div>
+                <div class="col-md-1 px-0 text-center">
+                    <br>
+                    <a href="{% url "listar_desafio" %}"><i class="bx bx-reset bx-md text-white"></i></a>
                 </div>
                 <div class="col-md">
                     <br>
@@ -70,8 +85,12 @@
                         <tr class="linha">
                             <th><a href="{% url 'desafio' desafio.id %}">{{desafio.id}}</a></th>
                             <td>{{desafio.titulo}}</td>
-                            <td>{{desafio.get_dificuldade_display}}</td>
-                            <td>{{desafio.status}}</td>
+                            <td><span class="badge rounded-0 text-bg-success fs-6 fw-normal w-75">{{desafio.get_dificuldade_display}}</span></td>
+                            {% if desafio.status == 'Em aberto' %}
+                                <td><span class="badge rounded-0 text-bg-info fs-6 fw-normal w-75">{{desafio.status}}</span></td>
+                            {% else %}    
+                                <td><span class="badge rounded-0 text-bg-success fs-6 fw-normal w-75">{{desafio.status}}</span></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>

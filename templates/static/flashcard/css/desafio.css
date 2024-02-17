@@ -1,7 +1,6 @@
 .badge-categoria{
-    padding: 5px;
+    padding: 5px 10px;
     background-color: #122342;
-    
 }
 
 .box-new-flashcard{
@@ -61,5 +60,4 @@ td, th{
 
 tr{
     background-color: var(--main-color);
-
 }

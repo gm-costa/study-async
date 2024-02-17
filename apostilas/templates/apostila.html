@@ -14,20 +14,16 @@
 
 {% endblock 'cabecalho' %}
 
-
 {% block 'conteudo' %}
 
     <div class="container">
-        <br><br>
-        <div class="row">
-            <div class="col-md">
-                
+        <h2 class="mt-5 mb-4">{{apostila}}</h2>
+        <div class="row gap-4">
+            <div class="col-md">           
                 <a href="{{apostila.arquivo.url}}" target="_blank">
                     <div class="w-100" id="pdf-container">
-                        Teste
                     </div>
                 </a>
-
             </div>
             <div class="col-md">
                 <p>Views únicas: {{views_unicas}}</p>

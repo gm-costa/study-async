@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static %}10px;
 
 {% block 'titulo' %}Relatório detalhes{% endblock  %}
 
@@ -9,31 +9,59 @@
     <link href="{% static 'flashcard/css/novo_flashcard.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/iniciar_desafio.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/desafio.css' %}" rel="stylesheet">
+    <link href="{% static 'flashcard/css/relatorio.css' %}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 {% endblock 'cabecalho' %}
-
 
 {% block 'conteudo' %}
 
     <div class="container">
         <br>
-        <br>
+        <p class="fonte-secundaria mb-2">{{desafio.titulo}}</p>
+        {% for categoria in desafio.categoria.all %}
+            <span class="badge-categoria me-2">{{categoria}}</span>
+        {% endfor %}
+        <span class="badge-categoria bg-danger">{{desafio.get_dificuldade_display}}</span>
+        <hr>
         <div class="row">
             <div class="col-md">
-                <p class="fonte-secundaria">{{desafio.titulo}}</p>
-                <hr>
+                <p class="acertos">Acertos totais</p>
                 <canvas id="grafico1"></canvas>
             </div>
             <div class="col-md">
-                <br><br><br><br>
-                
+                <p class="acertos">Acertos por área de conhecimento</p>
                 <div style="background-color: white;">
-
                     <canvas id="grafico2"></canvas>
-
                 </div>
             </div>
+        </div>
+        <hr>
+        <p class="fonte-secundaria">Melhores matérias</p>
+        <div class="d-flex gap-4 mb-4">
+            {% for k, v in melhores_materias.items %} 
+                <div class="card">
+                    <div class="card-header">{{k}}</div>
+                    <div class="card-body ps-3 py-2">
+                        <p class="cart-text mb-0">Acertos &nbsp;<span>{{v.0}}</span></p>
+                        <p class="cart-text mb-0">Erros &nbsp;<span>{{v.1}}</span></p>
+                        <p class="cart-text mb-0">Faltantes &nbsp;<span>{{v.2}}</span></p>
+                    </div>
+                </div>
+            {% endfor %}    
+        </div>
+        <p class="fonte-secundaria">Piores matérias</p>
+        <div class="d-flex gap-4">
+            {% for k, v in piores_materias.items %} 
+                <div class="card">
+                    <div class="card-header">{{k}}</div>
+                    <div class="card-body ps-3 py-2">
+                        <p class="cart-text mb-0">Acertos &nbsp;<span>{{v.0}}</span></p>
+                        <p class="cart-text mb-0">Erros &nbsp;<span>{{v.1}}</span></p>
+                        <p class="cart-text mb-0">Faltantes &nbsp;<span>{{v.2}}</span></p>
+                    </div>
+                </div>
+            {% endfor %}    
         </div>
 
     </div>
@@ -61,21 +89,16 @@
         new Chart(ctx2, {
             type: 'radar',
             data: {
-                labels: {{categorias|safe}},
-                datasets: [{
-                    label: 'Qtd',
-                    data: {{dados2}},
-                    borderWidth: 1,
-                    fill: true,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    pointBackgroundColor: 'rgb(255, 99, 132)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgb(255, 99, 132)'
-                }]
-            },
-            
+                labels: ['Acertos', 'Erros', 'Faltantes'],
+                datasets: [
+                    {% for k, v in dados2.items %} {
+                        label: '{{k}}',
+                        data: {{v}},
+                        borderWidth: 1,
+                    },
+                    {% endfor %}    
+                ]
+            }, 
         });
     </script>
 

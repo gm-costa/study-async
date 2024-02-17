@@ -2,12 +2,11 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from flashcard.models import Categoria, Desafio, Flashcard, FlashcardDesafio
 
-
+@login_required(login_url='login')
 def novo_flashcard(request):
-    if not request.user.is_authenticated:
-        return redirect(reverse('login'))
     
     categorias = Categoria.objects.all()
     dificuldades = Flashcard.DIFICULDADE_CHOICES
@@ -66,6 +65,7 @@ def novo_flashcard(request):
         return render(request, 'novo_flashcard.html', context)
 
 
+@login_required(login_url='login')
 def deletar_flashcard(request, id):
     flashcard = get_object_or_404(Flashcard, id=id)
     if flashcard.user == request.user:
@@ -81,6 +81,7 @@ def deletar_flashcard(request, id):
     return redirect(reverse('novo_flashcard'))
 
 
+@login_required(login_url='login')
 def iniciar_desafio(request):
 
     categorias = Categoria.objects.all()
@@ -141,23 +142,46 @@ def iniciar_desafio(request):
         )
 
 
+@login_required(login_url='login')
 def listar_desafio(request):
     categorias = Categoria.objects.all()
     dificuldades = Flashcard.DIFICULDADE_CHOICES
-    #TODO: Desenvolver os filtros
+    lista_status = ['Em aberto', 'Concluído']
+
+    categoria_filtro = request.GET.get('categoria')
+    dificuldade_filtro = request.GET.get('dificuldade')
+    status_filtro = request.GET.get('status')
+
     desafios = Desafio.objects.filter(user=request.user)
-    #TODO: Desenvolver os status
+
+    if categoria_filtro:
+        desafios = desafios.filter(categoria__id=categoria_filtro)
+        categoria_filtro = Categoria.objects.get(id=categoria_filtro)
+    
+    if dificuldade_filtro:
+        desafios = desafios.filter(dificuldade=dificuldade_filtro)
+
+    if status_filtro:
+        desafios = [x for x in desafios if x.status==status_filtro]
+
+    context = {
+        'categorias': categorias,
+        'dificuldades': dificuldades,
+        'lista_status': lista_status,
+        'cat_filtro': categoria_filtro,
+        'dif_filtro': dificuldade_filtro,
+        'status_filtro': status_filtro,
+        'desafios': desafios,
+    }
+
     return render(
         request,
         'listar_desafio.html',
-        {
-            'categorias': categorias,
-            'dificuldades': dificuldades,
-            'desafios': desafios,
-        },
+        context
     )
 
 
+@login_required(login_url='login')
 def desafio(request, id):
     desafio = get_object_or_404(Desafio, id=id)
 
@@ -181,6 +205,7 @@ def desafio(request, id):
         )
 
 
+@login_required(login_url='login')
 def responder_flashcard(request, id):
     flashcard_desafio = get_object_or_404(FlashcardDesafio, id=id)
 
@@ -196,6 +221,7 @@ def responder_flashcard(request, id):
     return redirect(f'/flashcard/desafio/{desafio_id}/')
 
 
+@login_required(login_url='login')
 def relatorio(request, id):
     desafio = get_object_or_404(Desafio, id=id)
 
@@ -206,19 +232,35 @@ def relatorio(request, id):
     dados = [acertos, erros, faltantes]
 
     categorias = desafio.categoria.all()
-    name_categoria = [i.nome for i in categorias]
+    name_categorias = [i.nome for i in categorias]
 
-    dados2 = []
+    dados2 = {}
+    melhores_materias = {}
+    piores_materias = {}
+
     for categoria in categorias:
-        dados2.append(desafio.flashcards.filter(flashcard__categoria=categoria).filter(acertou=True).count())
 
+        acertos = desafio.flashcards.filter(flashcard__categoria=categoria).filter(acertou=True).count()
+
+        erros = desafio.flashcards.filter(flashcard__categoria=categoria).filter(respondido=True).filter(acertou=False).count()
+
+        faltantes = desafio.flashcards.filter(flashcard__categoria=categoria).filter(respondido=False).count()
+
+        dados2[categoria.nome] = [acertos, erros, faltantes]
+        
+        if (acertos + erros) > 0:
+            if acertos / (acertos + erros) >= 0.5:
+                melhores_materias[categoria.nome] = [acertos, erros, faltantes]
+            elif acertos / (acertos + erros) < 0.4:
+                piores_materias[categoria.nome] = [acertos, erros, faltantes]
+    
     context = {
         'desafio': desafio,
         'dados': dados,
-        'categorias': name_categoria,
+        'categorias': name_categorias,
         'dados2': dados2,
+        'melhores_materias': melhores_materias,
+        'piores_materias': piores_materias,
     }
 
-    # TODO: Fazer o rank
-    
     return render(request, 'relatorio.html', context)

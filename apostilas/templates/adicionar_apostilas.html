@@ -14,60 +14,69 @@
 
 {% endblock 'cabecalho' %}
 
-
 {% block 'conteudo' %}
 
     <div class="container">
-        <br><br>
-        <div class="row">
-            <div class="col-md">
 
-                <div class="box-form">
+        <div class="row gap-4 my-5">
+            <div class="col-md">
+                <div class="box-form mt-0">
+                    <p class="fs-3 fw-bold">Adicionar resumos</p>
                     {% if messages %}
-                        <br>
                         {% for message in messages %}
-                            <section class="alert {{message.tags}}">
+                            <section class="alert {{message.tags}} tac py-1 mb-3">
                                 {{message}}
                             </section>
                         {% endfor %}
-                        <br>
                     {% endif %}
                     <form action="{% url "adicionar_apostilas" %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
-                        <p class="fonte-secundaria">Adicionar resumos</p>
-                        <label>Titulo</label>
-                        <input type="text" name="titulo" placeholder="titulo" class="form-control">
-                        <br>
-                        <label>Arquivo</label>
-                        <input type="file" name="arquivo" class="form-control">
-                        <br>
-                        <input type="submit" class="btn-cadastro" value="Enviar">
+                        <div class="mb-3">
+                            <label>Titulo</label>
+                            <input type="text" name="titulo" placeholder="titulo" class="form-control" value="{{titulo}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Arquivo</label>
+                            <input type="file" name="arquivo" class="form-control" required>
+                        </div>
+                        <div class="mb-4">
+                            <label>Tags</label>
+                            <input type="text" name="tags" class="form-control" placeholder="Informe as tags separadas por ; (ponto e vírgula)" value="{{tags}}" required>
+                        </div>
+                        <input type="submit" class="btn-cadastro bsm" value="Salvar">
                     </form>
                 </div>
-
             </div>
             <div class="col-md">
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col">Titulo</th>
-                            <th scope="col">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for apostila in apostilas %}
-                            <tr class="linha">
-                                <td>{{apostila.titulo}}</td>
-                                <td>
-                                    <a href="{% url "apostila" apostila.id %}" class="btn-cadastro bsm">Abrir</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <hr>
-                <p class="fonte-secundaria">Views totais: {{views_totais}}</p>
+                <p class="fs-3 fw-bold">Buscar resumos</p>
+                <form action="{% url "adicionar_apostilas" %}" method="GET"> 
+                    <input type="text" name="tags-busca" class="form-control mb-4" placeholder="Informe as tags separadas por ; (ponto e vírgula)">
+                    <input type="submit" class="btn-cadastro bsm text-black text-decoration-none" value="Buscar">
+                    <a href="{% url "adicionar_apostilas" %}" class="btn-cadastro btn-table py-2 ms-4">Desfazer filtro</a>
+                </form>
             </div>
+        </div>
+        <hr>
+        <div class="row mt-4">
+            <p class="fonte-secundaria">Views totais: {{views_totais}}</p>
+            <table class="">
+                <thead>
+                    <tr>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for apostila in apostilas %}
+                        <tr class="linha">
+                            <td>{{apostila.titulo}}</td>
+                            <td>
+                                <a href="{% url "apostila" apostila.id %}" class="btn-cadastro btn-table">Abrir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
         </div>
     </div>
 

@@ -20,8 +20,10 @@
             <div class="col-md">
                 <h3 class="fonte-secundaria" >Desafio iniciado</h3>
                 <!-- mostrar as categorias do desafio -->
-                <span class="badge-categoria">Programação</span>
-                <span class="badge-categoria" >Matemática</span>
+                {% for categoria in desafio.categoria.all %}
+                    <span class="badge-categoria">{{categoria}}</span>
+                {% endfor %}
+                <span class="badge-categoria bg-danger">{{desafio.get_dificuldade_display}}</span>
                 <br>
                 <br>
                 <br>
