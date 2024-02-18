@@ -4,15 +4,18 @@
 }
 
 .badge-facil {
-    background-color: #5B00F5;
+    /* background-color: #5B00F5; */
+    background-color: #1DAB1A;
 }
 
 .badge-medio {
-    background-color: #AB00F5;
+    /* background-color: #AB00F5; */
+    background-color: #E8910E;
 }
 
 .badge-dificil {
-    background-color: #F52800;
+    /* background-color: #F52800; */
+    background-color: #FE0000;
 }
 
 .box-new-flashcard{
