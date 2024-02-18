@@ -11,6 +11,12 @@ def cadastro(request):
         senha = request.POST.get('senha')
         confirmar_senha = request.POST.get('confirmar_senha')
 
+        if len(username.strip()) == 0 or len(senha.strip()) == 0 or len(confirmar_senha.strip()) == 0:
+            messages.add_message(
+                request, messages.ERROR, 'Preencha todos os campos!'
+            )
+            return redirect(reverse('cadastro'))
+        
         if not senha == confirmar_senha:
             messages.add_message(
                 request, messages.ERROR, 'As senhas não coincídem'
@@ -52,6 +58,12 @@ def logar(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         senha = request.POST.get('senha')
+
+        if len(username.strip()) == 0 or len(senha.strip()) == 0:
+            messages.add_message(
+                request, messages.ERROR, 'Preencha todos os campos!'
+            )
+            return redirect(reverse('login'))
 
         user = authenticate(request, username=username, password=senha)
         if user:
