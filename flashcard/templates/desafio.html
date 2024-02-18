@@ -2,45 +2,35 @@
 {% load static %}
 
 {% block 'cabecalho' %}
-
     <link href="{% static 'usuarios/css/cadastro.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/novo_flashcard.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/iniciar_desafio.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/desafio.css' %}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
 {% endblock 'cabecalho' %}
-
 
 {% block 'conteudo' %}
     <div class="container">
-        <br>
-        <br>
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-md">
                 <h3 class="fonte-secundaria" >Desafio iniciado</h3>
                 <!-- mostrar as categorias do desafio -->
                 {% for categoria in desafio.categoria.all %}
                     <span class="badge-categoria">{{categoria}}</span>
                 {% endfor %}
-                <span class="badge-categoria bg-danger">{{desafio.get_dificuldade_display}}</span>
-                <br>
-                <br>
-                <br>
+                <span class="badge-categoria bg-danger">
+                    {{desafio.get_dificuldade_display}}
+                </span>
+                <br><br><br>
                 {% for flash in desafio.flashcards.all %}
-                    <div class="box-new-flashcard {% if flash.respondido %}op2{% endif %}">
+                    <div class="box-new-flashcard {% if flash.respondido %}op2{% endif %} mb-4">
                         <div class="flashcard {{flash.flashcard.css_dificuldade}}">
-
                             <div class="flashcard-categoria">
                                 {{flash.flashcard.categoria}}
                             </div>
-                            <br>
-                            <br>
-                            <div class="flashcard-box-item" onclick="flip_card({{flash.id}})">
+                            <div class="flashcard-box-item mt-4" onclick="flip_card({{flash.id}})">
                                 <p class="flashcard-item">{{flash.flashcard.pergunta}}</p>
                             </div>
-
-                            
                             {% if not flash.respondido %}
                                 <div class="responder">
                                     <a href="{% url 'responder_flashcard' flash.id %}?acertou=0&desafio_id={{desafio.id}}"><i class='bx bxs-x-square icone-vermelho'></i></a>
@@ -54,24 +44,28 @@
                                 {% endif%}
 
                             {% endif %}
-                            
                         </div>
                         <div class="resposta-flashcard" id="{{flash.id}}">
                             {{flash.flashcard.resposta}}
                         </div>
                     </div>
-                    <br>
-                    <br>
                 {% endfor %}
 
             </div>
             <div class="col-md">
-
-                <h3 class="fonte-secundaria">Resultado</h3>
-                <p class="fonte-p">Acertos: {{acertos}}</p>
-                <p class="fonte-p">Erros: {{erros}}</p>
-                <p class="fonte-p">Faltantes: {{faltantes}}</p>
-                <br>
+                <h3 class="fonte-secundaria mb-4">Resultado</h3>
+                <div class="row w-50 mb-3">
+                    <div class="col">
+                        <p class="fonte-p">Acertos:</p>
+                        <p class="fonte-p">Erros:</p>
+                        <p class="fonte-p">Faltantes:</p>
+                    </div>
+                    <div class="col">
+                        <p class="fonte-p">{{acertos}}</p>
+                        <p class="fonte-p">{{erros}}</p>
+                        <p class="fonte-p">{{faltantes}}</p>
+                    </div>
+                </div>
                 <a class="btn-cadastro btn-desafio" href="{% url 'relatorio' desafio.id %}">Relatório detalhado</a>
             </div>
         </div>
