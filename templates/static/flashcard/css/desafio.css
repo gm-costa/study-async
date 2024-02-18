@@ -35,7 +35,6 @@
 }
 
 .box-listar{
-    
     background-color: #0b1526;
     padding: 20px;
 }
@@ -44,20 +43,27 @@ table{
     width: 100%;
     padding: 20px;
     text-align: center;
-
-}
-
-.linha{
-    height: 40px;
-    background-color: var(--dark-color);
-    padding: 20px;
-}
-
-
-td, th{
-    padding: 20px;
 }
 
 tr{
     background-color: var(--main-color);
+}
+
+th{
+    padding: 20px;
+}
+
+.linha{
+    height: 30px;
+    background-color: var(--dark-color);
+    padding: 0 10px;
+    border-bottom: 4px solid #0b1526;
+}
+
+td {
+    padding: 8px 0;
+}
+
+td a {
+    text-decoration: none;
 }

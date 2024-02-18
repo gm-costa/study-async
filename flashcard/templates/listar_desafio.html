@@ -2,29 +2,16 @@
 {% load static %}
 
 {% block 'cabecalho' %}
-
     <link href="{% static 'usuarios/css/cadastro.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/novo_flashcard.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/iniciar_desafio.css' %}" rel="stylesheet">
     <link href="{% static 'flashcard/css/desafio.css' %}" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
 {% endblock 'cabecalho' %}
 
-
 {% block 'conteudo' %}
-    <div class="container">
-        <br>
-        <br>
-        {% if messages %}
-            <div class="mt-4">
-                {% for message in messages %}
-                    <div class="alert {{message.tags}} tac py-1 mb-3">
-                        {{message}}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    <div class="container pt-5">
+        {% include "partials/messages.html" %}
         <form action="{% url "listar_desafio" %}" method="GET">
             <div class="row gap-2">
                 <div class="col-md">
@@ -52,7 +39,7 @@
                     <select name="status" class="form-select">
                         <option value="">Todos</option>
                         {% for st in lista_status %}
-                            <option value="{{st}}"  {% if st == status_filtro %} selected {% endif %}>
+                            <option value="{{st}}" {% if st == status_filtro %} selected {% endif %}>
                                 {{st}}
                             </option>
                         {% endfor %}                   
@@ -68,9 +55,8 @@
                 </div>
             </div>
         </form>
-        <br>
-        <br>
-        <div class="box-listar">
+
+        <div class="box-listar mt-5 pt-0">
             <table>
                 <thead>
                     <tr>
@@ -83,13 +69,13 @@
                 <tbody>
                     {% for desafio in desafios %}
                         <tr class="linha">
-                            <th><a href="{% url 'desafio' desafio.id %}">{{desafio.id}}</a></th>
+                            <td><a href="{% url 'desafio' desafio.id %}">{{desafio.id}}</a></td>
                             <td>{{desafio.titulo}}</td>
-                            <td><span class="badge rounded-0 text-bg-success fs-6 fw-normal w-75">{{desafio.get_dificuldade_display}}</span></td>
+                            <td><span class="badge rounded-2 text-bg-success fs-6 fw-normal w-75">{{desafio.get_dificuldade_display}}</span></td>
                             {% if desafio.status == 'Em aberto' %}
-                                <td><span class="badge rounded-0 text-bg-info fs-6 fw-normal w-75">{{desafio.status}}</span></td>
+                                <td><span class="badge rounded-2 text-bg-info fs-6 fw-normal w-75">{{desafio.status}}</span></td>
                             {% else %}    
-                                <td><span class="badge rounded-0 text-bg-success fs-6 fw-normal w-75">{{desafio.status}}</span></td>
+                                <td><span class="badge rounded-2 text-bg-success fs-6 fw-normal w-75">{{desafio.status}}</span></td>
                             {% endif %}
                         </tr>
                     {% endfor %}
