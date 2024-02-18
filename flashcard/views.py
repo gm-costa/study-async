@@ -1,9 +1,11 @@
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from flashcard.models import Categoria, Desafio, Flashcard, FlashcardDesafio
+
 
 @login_required(login_url='login')
 def novo_flashcard(request):
@@ -105,7 +107,10 @@ def iniciar_desafio(request):
         context['titulo'] = titulo
         context['dif_selecionada'] = dificuldade
         context['qtd_perguntas'] = qtd_perguntas
-        context['cat_selecionadas'] = [Categoria.objects.get(id=cat) for cat in categorias_selecionadas]
+
+        if len(categorias_selecionadas) > 0:
+            categorias_selecionadas = [Categoria.objects.get(id=cat) for cat in categorias_selecionadas]
+            context['cat_selecionadas'] = categorias_selecionadas
 
         if len(titulo.strip()) == 0 or len(dificuldade.strip()) == 0 or len(qtd_perguntas.strip()) == 0:
             messages.add_message(
@@ -125,41 +130,53 @@ def iniciar_desafio(request):
             quantidade_perguntas=qtd_perguntas,
             dificuldade=dificuldade,
         )
-        desafio.save()
+        try:
+            with transaction.atomic():
+                desafio.save()
 
-        desafio.categoria.add(*categorias)
+                desafio.categoria.add(*categorias_selecionadas)
 
-        flashcards = (
-            Flashcard.objects.filter(user=request.user)
-            .filter(dificuldade=dificuldade)
-            .filter(categoria_id__in=categorias)
-            .order_by('?')
-        )
+                flashcards = (
+                    Flashcard.objects.filter(user=request.user)
+                    .filter(dificuldade=dificuldade)
+                    .filter(categoria_id__in=categorias_selecionadas)
+                    .order_by('?')
+                )
 
-        if flashcards.count() < int(qtd_perguntas):
-            #TODO: Tratar para escolher depois
+                if flashcards.count() == 0:
+                    messages.add_message(
+                        request, messages.ERROR, 'Não existem flashcards para os critérios selecionados!'
+                    )
+                    raise Exception()
+                    return render(request, template_name, context)
+                
+                if flashcards.count() < int(qtd_perguntas):
+                    messages.add_message(
+                        request, messages.WARNING, f'Foram incluídos apenas {flashcards.count()} flashcards no desafio!'
+                    )
+
+                flashcards = flashcards[: int(qtd_perguntas)]
+
+                for f in flashcards:
+                    flashcard_desafio = FlashcardDesafio(
+                        flashcard=f,
+                    )
+                    flashcard_desafio.save()
+                    desafio.flashcards.add(flashcard_desafio)
+
+                desafio.save()
+                messages.add_message(
+                        request, messages.SUCCESS, 'Desafio cadastrado com sucesso.'
+                    )
+                return redirect(reverse('listar_desafio'))
+            
+        except:
+            transaction.rollback()
             messages.add_message(
-                request, messages.ERROR, 'Os flashcards não foram incluídos no desafio!'
-            )
-            return redirect(reverse('iniciar_desafio'))
-
-        flashcards = flashcards[: int(qtd_perguntas)]
-
-        for f in flashcards:
-            flashcard_desafio = FlashcardDesafio(
-                flashcard=f,
-            )
-            flashcard_desafio.save()
-            desafio.flashcards.add(flashcard_desafio)
-
-        desafio.save()
-        messages.add_message(
-                request, messages.SUCCESS, 'Desafio cadastrado com sucesso.'
-            )
-        
-        return redirect(reverse('listar_desafio'))
-        # return redirect(f'/flashcard/desafio/{desafio.id}')
-
+                        request, messages.ERROR, 'Desafio não cadastrado.'
+                    )
+            return render(request, template_name, context)
+                
     else:
         return render(request, template_name, context)
 

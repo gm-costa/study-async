@@ -10,7 +10,7 @@
 {% block 'conteudo' %}
     <div class="container ctx">
         <h2 class="fonte-principal mt-5">Iniciar desafio</h2>
-        <p class="fonte-secundaria">Escolha as categorias e a dificuldade do desafio</p>
+        <p class="fonte-secundaria mb-4">Escolha as categorias e a dificuldade do desafio</p>
         {% include "partials/messages.html" %}
         <form action="{% url 'iniciar_desafio' %}" method="POST">
             {% csrf_token%}
