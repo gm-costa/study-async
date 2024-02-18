@@ -6,50 +6,49 @@ from .models import Apostila, ViewApostila, Tag
 
 
 def adicionar_apostilas(request):
+    template_name = 'adicionar_apostilas.html'
     apostilas = Apostila.objects.filter(user=request.user)
 
     views_totais = ViewApostila.objects.filter(apostila__user = request.user).count()
 
+    context = {
+        'apostilas': apostilas, 
+        'views_totais': views_totais,
+    }
+
     if request.method == 'GET':
         tags_busca = request.GET.get('tags-busca')
-
         list_tags = []
 
         if tags_busca:
             list_tags = tags_busca.split(';')
             apostilas = apostilas.filter(tags__tag__in=list_tags)
+            context['apostilas'] = apostilas
+            context['tags_busca'] = tags_busca
 
-        context = {
-            'apostilas': apostilas, 
-            'views_totais': views_totais,
-        }
-
-        return render(request, 'adicionar_apostilas.html', context)
+        return render(request, template_name, context)
     
     elif request.method == 'POST':
         titulo = request.POST.get('titulo')
         tags = request.POST.get('tags')
 
-        context = {
-            'titulo': titulo,
-            'tags': tags,
-        }
+        context['titulo'] = titulo
+        context['tags'] = tags
 
         if not titulo:
             messages.add_message(request, messages.ERROR, 'Título não informado !')
-            return render(request, 'adicionar_apostilas.html', context)
+            return render(request, template_name, context)
         
         if not request.FILES:
             messages.add_message(request, messages.ERROR, 'Arquivo não escolhido !')
-            return render(request, 'adicionar_apostilas.html', context)
+            return render(request, template_name, context)
         
         arquivo = request.FILES['arquivo']
 
         if not tags:
             context['arquivo'] = arquivo.name
-            print(context)
             messages.add_message(request, messages.ERROR, 'Nenhuma tag informada !')
-            return render(request, 'adicionar_apostilas.html', context)
+            return render(request, template_name, context)
         else:
             list_tags = tags.split(';')
 
@@ -57,7 +56,6 @@ def adicionar_apostilas(request):
         try:
             with transaction.atomic():
                 apostila.save()
-                # apostila.tags.add(*list_tags)
                 for tag in list_tags:
                     tag = tag.strip().lower()
                     if not Tag.objects.filter(tag=tag):
@@ -70,12 +68,13 @@ def adicionar_apostilas(request):
                 messages.add_message(
                     request, messages.SUCCESS, 'Apostila adicionada com sucesso.'
                 )
+                return redirect(reverse('adicionar_apostilas'))
         except:
+            transaction.rollback()
             messages.add_message(
-                request, messages.ERROR, 'Não foi possível adicionar os dados !'
+                request, messages.ERROR, 'Não foi possível adicionar a apostila !'
             )
-        
-        return redirect(reverse('adicionar_apostilas'))
+            return render(request, template_name, context)
 
 
 def apostila(request, id):
