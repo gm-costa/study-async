@@ -18,38 +18,35 @@
                     <form action="{% url "novo_flashcard" %}" method="POST"> 
                         {% csrf_token %}
                         <h3>Novo flashcard</h3>
-                        {% if messages %}
-                            <br>
-                            {% for message in messages %}
-                                <section class="alert {{message.tags}} tac py-1 mb-3">
-                                    {{message}}
-                                </section>
-                            {% endfor %}
-                        {% endif %}
+                        {% include "partials/messages.html" %}
                         <div class="my-3">
                             <label>Pergunta</label>
-                            <input type="text" class="form-control" placeholder="pergunta" name="pergunta">
+                            <input type="text" class="form-control" placeholder="Formule a pergunta" name="pergunta" value="{{pergunta}}" required autofocus>
                         </div>
                         <div class="mb-3">
                             <label>Resposta</label>
-                            <textarea class="form-control" name="resposta"></textarea>
+                            <textarea class="form-control" name="resposta" placeholder="Insira a resposta" required>{{resposta}}</textarea>
                         </div>
                         <div class="row">
                             <div class="col-md">
                                 <label for="">Categoria</label>
-                                <select class="form-select" name="categoria">
+                                <select class="form-select" name="categoria" required>
                                     <option value="">- - -</option>
                                     {% for categoria in categorias %}
-                                        <option value="{{categoria.id}}">{{categoria.nome}}</option>
+                                        <option value="{{categoria.id}}" {% if categoria.id == cat_novo.id %}selected{% endif %}>
+                                            {{categoria.nome}}
+                                        </option>
                                     {% endfor %}    
                                 </select>
                             </div>
                             <div class="col-md mb-4">
                                 <label for="">Dificuldade</label>
-                                <select class="form-select" name="dificuldade">
+                                <select class="form-select" name="dificuldade" required>
                                     <option value="">- - -</option>
                                     {% for dificuldade in dificuldades %}
-                                        <option value="{{dificuldade.0}}">{{dificuldade.1}}</option>
+                                        <option value="{{dificuldade.0}}">
+                                            {{dificuldade.1}}
+                                        </option>
                                     {% endfor %}    
                                 </select>
                             </div>

@@ -29,17 +29,22 @@ def novo_flashcard(request):
         'cat_filtro': categoria_filtro,
         'dif_filtro': dificuldade_filtro,
     }
+
     if request.method == 'POST':
         pergunta = request.POST.get('pergunta')
         resposta = request.POST.get('resposta')
         categoria = request.POST.get('categoria')
         dificuldade = request.POST.get('dificuldade')
 
-        if len(pergunta.strip()) == 0 or len(resposta.strip()) == 0:
+        context['pergunta'] = pergunta
+        context['resposta'] = resposta
+        context['cat_novo'] = Categoria.objects.get(id=categoria)
+
+        if len(pergunta.strip()) == 0 or len(resposta.strip()) == 0 or len(categoria.strip()) == 0 or len(dificuldade.strip()) == 0:
             messages.add_message(
-                request, messages.ERROR, 'Preencha os campos de pergunta e resposta'
+                request, messages.ERROR, 'Preencha todos os campos!'
             )
-            return redirect(reverse('novo_flashcard'))
+            return render(request, 'novo_flashcard.html', context)
 
         flashcard = Flashcard(
             user=request.user,
@@ -61,7 +66,6 @@ def novo_flashcard(request):
         return redirect(reverse('novo_flashcard'))
         
     else:
-
         return render(request, 'novo_flashcard.html', context)
 
 
@@ -83,15 +87,37 @@ def deletar_flashcard(request, id):
 
 @login_required(login_url='login')
 def iniciar_desafio(request):
-
+    template_name = 'iniciar_desafio.html'
     categorias = Categoria.objects.all()
     dificuldades = Flashcard.DIFICULDADE_CHOICES
 
+    context = {
+        'categorias': categorias, 
+        'dificuldades': dificuldades,
+    }
+
     if request.method == 'POST':
         titulo = request.POST.get('titulo')
-        categorias = request.POST.getlist('categoria')
         dificuldade = request.POST.get('dificuldade')
         qtd_perguntas = request.POST.get('qtd_perguntas')
+        categorias_selecionadas = request.POST.getlist('categoria')
+
+        context['titulo'] = titulo
+        context['dif_selecionada'] = dificuldade
+        context['qtd_perguntas'] = qtd_perguntas
+        context['cat_selecionadas'] = [Categoria.objects.get(id=cat) for cat in categorias_selecionadas]
+
+        if len(titulo.strip()) == 0 or len(dificuldade.strip()) == 0 or len(qtd_perguntas.strip()) == 0:
+            messages.add_message(
+                request, messages.ERROR, 'Título, dificuldade e quantidade de questões devem ser preenchidos!'
+            )
+            return render(request, template_name, context)
+
+        if len(categorias_selecionadas) == 0:
+            messages.add_message(
+                request, messages.ERROR, 'Nenhuma categoria selecionada!'
+            )
+            return render(request, template_name, context)
 
         desafio = Desafio(
             user=request.user,
@@ -135,11 +161,7 @@ def iniciar_desafio(request):
         # return redirect(f'/flashcard/desafio/{desafio.id}')
 
     else:
-        return render(
-            request,
-            'iniciar_desafio.html',
-            {'categorias': categorias, 'dificuldades': dificuldades},
-        )
+        return render(request, template_name, context)
 
 
 @login_required(login_url='login')
