@@ -71,7 +71,18 @@
                         <tr class="linha">
                             <td><a href="{% url 'desafio' desafio.id %}">{{desafio.id}}</a></td>
                             <td>{{desafio.titulo}}</td>
-                            <td><span class="badge rounded-2 text-bg-success fs-6 fw-normal w-75">{{desafio.get_dificuldade_display}}</span></td>
+                            <td>
+                                <span class="badge rounded-2 fs-6 fw-normal w-75
+                                {% if desafio.dificuldade == 'F' %}
+                                    badge-facil
+                                {% elif desafio.dificuldade == 'M' %}
+                                    badge-medio
+                                {% else %}
+                                    badge-dificil
+                                {% endif %}">  
+                                    {{desafio.get_dificuldade_display}}
+                                </span>
+                            </td>
                             {% if desafio.status == 'Em aberto' %}
                                 <td><span class="badge rounded-2 text-bg-info fs-6 fw-normal w-75">{{desafio.status}}</span></td>
                             {% else %}    

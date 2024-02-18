@@ -3,6 +3,18 @@
     background-color: #122342;
 }
 
+.badge-facil {
+    background-color: #5B00F5;
+}
+
+.badge-medio {
+    background-color: #AB00F5;
+}
+
+.badge-dificil {
+    background-color: #F52800;
+}
+
 .box-new-flashcard{
     margin: 0;
 }
