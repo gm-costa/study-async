@@ -14,4 +14,10 @@ body{
 
 .nav-menu {
     background-color: var(--main-color);
+    padding: 0;
+}
+
+.nav-menu img{
+    width: 36px;
+    margin-right: 10px;
 }
