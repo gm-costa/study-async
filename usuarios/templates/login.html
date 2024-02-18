@@ -50,7 +50,10 @@
                                 <label>Senha</label>
                                 <input type="password" class="input-form" name="senha">
                             </div>
-                            <input type="submit" value="Enviar" class="btn-cadastro mb-5">
+                            <div class="d-flex justify-content-between mb-5">
+                                <input type="submit" value="Enviar" class="btn-cadastro">
+                                <a href="{% url "cadastro" %}" class="btn-secundario">Cadastre-se</a>
+                            </div>
                         </form>
                     </div>
                 </div>
