@@ -33,22 +33,16 @@
                             <div class="circle c3"></div>
                         </div>
                         <h3>Logar</h3>
-                        {% if messages %}
-                            {% for message in messages %}
-                                <section class="alert {{message.tags}} text-center py-1 mb-3">
-                                    {{message}}
-                                </section>
-                            {% endfor %}
-                        {% endif %}
+                        {% include "partials/messages.html" %}
                         <form action="{% url 'login' %}" method="POST">
                             {% csrf_token %}
                             <div class="my-3">
                                 <label>Username</label>
-                                <input type="text" class="input-form" name="username" autofocus>
+                                <input type="text" class="input-form" name="username" required autofocus>
                             </div>
                             <div class="mb-4">
                                 <label>Senha</label>
-                                <input type="password" class="input-form" name="senha">
+                                <input type="password" class="input-form" name="senha" required>
                             </div>
                             <div class="d-flex justify-content-between mb-5">
                                 <input type="submit" value="Enviar" class="btn-cadastro">
