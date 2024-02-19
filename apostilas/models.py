@@ -25,3 +25,12 @@ class ViewApostila(models.Model):
 
     def __str__(self):
         return self.ip
+
+
+class Avaliacao(models.Model):
+    apostila = models.ForeignKey(Apostila, on_delete=models.CASCADE)
+    nota = models.IntegerField()
+    comentario = models.TextField()
+
+    def __str__(self):
+        return f'{self.apostila} - {self.nota}'
